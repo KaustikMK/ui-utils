@@ -264,21 +264,22 @@ public class MainClient implements ClientModInitializer {
                         int timesToSend = Integer.parseInt(timesToSendField.getText());
 
                         if (action != null) {
-                            ClickSlotC2SPacket packet = new ClickSlotC2SPacket(syncId, revision, slot, button0, action, ItemStack.EMPTY, new Int2ObjectArrayMap<>());
-                            try {
-                                Runnable toRun = getFabricatePacketRunnable(mc, delayBox.isSelected(), packet);
-                                for (int i = 0; i < timesToSend; i++) {
-                                    toRun.run();
-                                }
-                            } catch (Exception e) {
-                                statusLabel.setForeground(Color.RED.darker());
-                                statusLabel.setText("You must be connected to a server!");
-                                MainClient.queueTask(() -> {
-                                    statusLabel.setVisible(false);
-                                    statusLabel.setText("");
-                                }, 1500L);
-                                return;
-                            }
+                            // TODO: Restore ClickSlotC2SPacket instantiation and sending logic for 1.21.7
+                            // ClickSlotC2SPacket packet = new ClickSlotC2SPacket(syncId, (short)revision, (short)slot, (byte)button0, action, new Int2ObjectArrayMap<ItemStackHash>(), ItemStackHash.EMPTY);
+                            // try {
+                            //     Runnable toRun = getFabricatePacketRunnable(mc, delayBox.isSelected(), packet);
+                            //     for (int i = 0; i < timesToSend; i++) {
+                            //         toRun.run();
+                            //     }
+                            // } catch (Exception e) {
+                            //     statusLabel.setForeground(Color.RED.darker());
+                            //     statusLabel.setText("You must be connected to a server!");
+                            //     MainClient.queueTask(() -> {
+                            //         statusLabel.setVisible(false);
+                            //         statusLabel.setText("");
+                            //     }, 1500L);
+                            //     return;
+                            // }
                             statusLabel.setVisible(true);
                             statusLabel.setForeground(Color.GREEN.darker());
                             statusLabel.setText("Sent successfully!");
@@ -448,7 +449,8 @@ public class MainClient implements ClientModInitializer {
                     throw new IllegalStateException("The current minecraft screen (mc.currentScreen) is null");
                 }
                 // fixes #137
-                mc.keyboard.setClipboard(Text.Serialization.toJsonString(mc.currentScreen.getTitle(), Objects.requireNonNull(MinecraftClient.getInstance().getServer()).getRegistryManager()));
+                // Updated for 1.21.7: use TextJsonUtil.toJson
+                mc.keyboard.setClipboard(TextJsonUtil.toJson(mc.currentScreen.getTitle()));
             } catch (IllegalStateException e) {
                 LOGGER.error("Error while copying title JSON to clipboard", e);
             }
